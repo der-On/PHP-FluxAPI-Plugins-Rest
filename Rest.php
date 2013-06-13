@@ -712,7 +712,7 @@ class Rest
                 ));
 
                 // if controller returns a response we pass it back directly
-                if (is_object($result) && is_subclass_of($result, Respone)) {
+                if (is_object($result) && is_subclass_of($result, 'Symfony\\Component\\HttpFoundation\\Response')) {
                     return $result;
                 } else {
                     return $this->_createSuccessResponse($result, $format);
