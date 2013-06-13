@@ -1,0 +1,15 @@
+{
+  "name": "flux-api/plugins/rest",
+  "license": "GPL-3.0+",
+  "version": "0.1",
+  "description": "Rest plugin for the flux-api",
+  "type": "flux-api-plugin",
+  "require": {
+    "flux-api/installers": ">=0.1",
+    "phpsec/phpsec": "0.6.*",
+    "symfony/validator": "~2.3"
+  },
+  "extra": {
+    "installer-name": "FluxAPI/Rest"
+  }
+}
