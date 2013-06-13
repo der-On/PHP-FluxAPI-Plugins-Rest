@@ -16,6 +16,11 @@ class Rest
         'default_mime_type' => 'application/json',
     );
 
+    public static function register(\FluxAPI\Api $api)
+    {
+        return new \Plugins\FluxAPI\Rest\Rest($api);
+    }
+
     public function __construct(\FluxAPI\Api $api)
     {
         $this->_api = $api;
