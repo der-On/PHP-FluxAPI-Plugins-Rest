@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Node>
+    <active>0</active>
+    <body>Node body
+on multiple lines</body>
+    <title>Node title</title>
+</Node>
