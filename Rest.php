@@ -25,10 +25,10 @@ class Rest
     {
         $this->_api = $api;
 
-        if (!isset($this->_api->config['plugin.options.FluxAPI/Rest'])) {
-            $this->_api->config['plugin.options.FluxAPI/Rest'] = $this->config;
+        if (!isset($this->_api->config['plugin.options']['FluxAPI/Rest'])) {
+            $this->_api->config['plugin.options']['FluxAPI/Rest'] = $this->config;
         } else {
-            $this->config = array_replace_recursive($this->config, $this->_api->config['plugin.options.FluxAPI/Rest']);
+            $this->config = array_replace_recursive($this->config, $this->_api->config['plugin.options']['FluxAPI/Rest']);
         }
 
         $this->registerRoutes();
@@ -354,12 +354,22 @@ class Rest
             $controller_route_name = $this->getUrlized($controller_name);
 
             foreach($_actions as $action => $options) {
+                $options = isset($options['Plugins/FluxAPI/Rest']) ? $options['Plugins/FluxAPI/Rest'] : new ControllerActionOptions();
+
+                if (is_array($options)) {
+                    $options = new ControllerActionOptions($options);
+                }
+
+                // action has no route
+                if (!$options->route) {
+                    continue;
+                }
                 // action overrides route
-                if (isset($options['route']) && !empty($options['route'])) {
-                    $route = $this->config['base_route'] . '/' . $options['route'];
+                elseif (is_string($options->route) && !empty($options->route)) {
+                    $route = $this->config['base_route'] . '/' . $options->route;
                 }
                 // no explicit route given, so generate it
-                else {
+                elseif ($options->route === true) {
                     // index routes do not have the action name appended to the route
                     if ($action == 'index') {
                         $action_route_name = '';
@@ -376,15 +386,15 @@ class Rest
                 }
 
                 // action has explicit method
-                if (isset($options['method']) && in_array(strtolower($options['method']), array('get','post','put','delete','update'))) {
-                    $method = strtolower($options['method']);
+                if (isset($options->method) && in_array(strtolower($options->method), array('get','post','put','delete','update'))) {
+                    $method = strtolower($options->method);
                 } else {
                     $method = 'match';
                 }
 
                 // action has explicit output format
-                if (isset($options['output_format'])) {
-                    $format = $options['output_format'];
+                if (isset($options->output_format)) {
+                    $format = $options->output_format;
                     $ext = $this->getExtensionFromFormat($format, $this->config['default_output_format']);
                 }
                 // action has no explicit output format
@@ -411,8 +421,8 @@ class Rest
                 }
 
                 // add route asserts if any
-                if (isset($options['route_asserts'])) {
-                    foreach($options['route_asserts'] as $assert) {
+                if (isset($options->route_asserts)) {
+                    foreach($options->route_asserts as $assert) {
                         $_route->assert($assert[0], $assert[1]);
                     }
                 }
@@ -426,8 +436,8 @@ class Rest
                     );
 
                     // add route asserts if any
-                    if (isset($options['route_asserts'])) {
-                        foreach($options['route_asserts'] as $assert) {
+                    if (isset($options->route_asserts)) {
+                        foreach($options->route_asserts as $assert) {
                             $_route->assert($assert[0], $assert[1]);
                         }
                     }
