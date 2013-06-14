@@ -422,8 +422,8 @@ class Rest
 
                 // add route asserts if any
                 if (isset($options->route_asserts)) {
-                    foreach($options->route_asserts as $assert) {
-                        $_route->assert($assert[0], $assert[1]);
+                    foreach($options->route_asserts as $key => $assert) {
+                        $_route->assert($key, $assert);
                     }
                 }
 
@@ -437,8 +437,8 @@ class Rest
 
                     // add route asserts if any
                     if (isset($options->route_asserts)) {
-                        foreach($options->route_asserts as $assert) {
-                            $_route->assert($assert[0], $assert[1]);
+                        foreach($options->route_asserts as $key => $assert) {
+                            $_route->assert($key, $assert);
                         }
                     }
                 }
