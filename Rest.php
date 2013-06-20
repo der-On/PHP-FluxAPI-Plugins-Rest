@@ -497,11 +497,10 @@ class Rest
             $update_method = 'update'.$model_name;
 
             try {
-                if ($this->_api->$update_method($query, $data, $input_format)) {
-                    return $this->_createSuccessResponse(
-                        array('success' => true),
-                        $format
-                    );
+                $result = $this->_api->$update_method($query, $data, $input_format);
+
+                if ($result) {
+                    return $this->_createModelSuccessResponse($result, $model_name, $format, TRUE);
                 } else {
                     return $this->_createErrorResponse(new \ErrorException('Error during update of resource.'), $format);
                 }
@@ -531,11 +530,10 @@ class Rest
             $update_method = 'update'.$model_name.'s';
 
             try {
-                if ($this->_api->$update_method($query, $data, $input_format)) {
-                    return $this->_createSuccessResponse(
-                        array('success' => true),
-                        $format
-                    );
+                $result = $this->_api->$update_method($query, $data, $input_format);
+
+                if ($result) {
+                    return $this->_createModelSuccessResponse($result, $model_name, $format, TRUE);
                 } else {
                     return $this->_createErrorResponse(new \ErrorException('Error during update of resources.'), $format);
                 }
