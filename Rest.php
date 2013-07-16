@@ -461,10 +461,8 @@ class Rest
                 return $this->_createErrorResponse($error, $format);
             }
 
-            $save_method = 'save'.$model_name;
-
             try {
-                if ($this->_api->$save_method($model)) {
+                if ($this->_api->save($model_name, $model)) {
                     return $this->_createModelSuccessResponse($model, $model_name, $format);
                 } else {
                     return $this->_createErrorResponse(new \ErrorException('Error during creation of resource.'), $format);
@@ -494,10 +492,8 @@ class Rest
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $update_method = 'update'.$model_name;
-
             try {
-                $result = $this->_api->$update_method($query, $data, $input_format);
+                $result = $this->_api->updateFirst($model_name, $query, $data, $input_format);
 
                 if ($result) {
                     return $this->_createModelSuccessResponse($result, $model_name, $format, TRUE);
@@ -527,10 +523,8 @@ class Rest
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $update_method = 'update'.$model_name.'s';
-
             try {
-                $result = $this->_api->$update_method($query, $data, $input_format);
+                $result = $this->_api->update($model_name, $query, $data, $input_format);
 
                 if ($result) {
                     return $this->_createModelSuccessResponse($result, $model_name, $format, TRUE);
@@ -557,10 +551,8 @@ class Rest
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $load_method = 'load'.$model_name;
-
             try {
-                $result = $this->_api->$load_method($query, $format);
+                $result = $this->_api->loadFirst($model_name, $query, $format);
 
                 if ($result) {
                     return $this->_createModelSuccessResponse($result, $model_name, $format, FALSE);
@@ -583,10 +575,8 @@ class Rest
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $load_method = 'load'.$model_name.'s';
-
             try {
-                $result = $this->_api->$load_method($query, $format);
+                $result = $this->_api->load($model_name, $query, $format);
 
                 if ($result) {
                     return $this->_createModelSuccessResponse($result, $model_name, $format, FALSE);
@@ -605,10 +595,6 @@ class Rest
     public function deleteModel(Request $request, $model_name, $id = NULL, $format)
     {
         if ($this->_api['plugins']->hasPlugin('Model',$model_name)) {
-            $input_format = $this->getInputFormat($request);
-
-            $data = $this->getRequestData($request, $input_format);
-
             $query = new Query();
 
             if (!empty($id)) {
@@ -617,10 +603,8 @@ class Rest
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $delete_method = 'delete'.$model_name;
-
             try {
-                $result = $this->_api->$delete_method($query, $data, $input_format);
+                $result = $this->_api->deleteFirst($model_name, $query);
 
                 if ($result) {
                     return $this->_createSuccessResponse(array('success' => true), $format);
@@ -639,18 +623,12 @@ class Rest
     public function deleteModels(Request $request, $model_name, $format)
     {
         if ($this->_api['plugins']->hasPlugin('Model',$model_name)) {
-            $input_format = $this->getInputFormat($request);
-
-            $data = $this->getRequestData($request, $input_format);
-
             $query = new Query();
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $delete_method = 'delete'.$model_name.'s';
-
             try {
-                $result = $this->_api->$delete_method($query, $data, $input_format);
+                $result = $this->_api->delete($model_name, $query);
 
                 if ($result) {
                     return $this->_createSuccessResponse(array('success' => true), $format);
@@ -669,18 +647,12 @@ class Rest
     public function countModels(Request $request, $model_name, $format)
     {
         if ($this->_api['plugins']->hasPlugin('Model',$model_name)) {
-            $input_format = $this->getInputFormat($request);
-
-            $data = $this->getRequestData($request, $input_format);
-
             $query = new Query();
 
             $this->addFiltersToQueryFromRequest($request, $query);
 
-            $count_method = 'count' . $model_name . 's';
-
             try {
-                $result = array( 'count' => $this->_api->$count_method($query) );
+                $result = array( 'count' => $this->_api->count($model_name, $query) );
 
                 return $this->_createSuccessResponse($result, $format);
             } catch (\Exception $error) {
