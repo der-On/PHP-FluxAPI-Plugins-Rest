@@ -387,9 +387,9 @@ class Rest
 
                 // action has explicit method
                 if (isset($options->method) && in_array(strtolower($options->method), array('get','post','put','delete','update'))) {
-                    $method = strtolower($options->method);
+                    $method = strtoupper($options->method);
                 } else {
-                    $method = 'match';
+                    $method = null;
                 }
 
                 // action has explicit output format
@@ -405,19 +405,27 @@ class Rest
                 // no explicit format set, using all
                 if ($format === FALSE) {
                     // with extension
-                    $_route = $this->_api->app->$method($route . '.{ext}',
+                    $_route = $this->_api->app->match($route . '.{ext}',
                         function(Request $request, $ext) use ($self, $controller_name, $action) {
                             $format = $this->getFormatFromExtension($ext, $self->config['default_output_format']);
                             return $self->callController($request, $controller_name, $action, $format);
                         }
                     );
+
+                    if (!empty($method)) {
+                        $_route->method($method);
+                    }
                 // explicit format set, using only that
                 } else {
-                    $_route = $this->_api->app->$method($route . '.' . $ext,
+                    $_route = $this->_api->app->match($route . '.' . $ext,
                         function(Request $request) use ($self, $controller_name, $action, $format) {
                             return $self->callController($request, $controller_name, $action, $format);
                         }
                     );
+
+                    if (!empty($method)) {
+                        $_route->method($method);
+                    }
                 }
 
                 // add route asserts if any
@@ -429,11 +437,15 @@ class Rest
 
                 // without extension
                 if ($format === FALSE || $format == $this->config['default_output_format']) {
-                    $_route = $this->_api->app->$method($route,
+                    $_route = $this->_api->app->match($route,
                         function(Request $request) use ($self, $controller_name, $action) {
                             return $self->callController($request, $controller_name, $action, $self->config['default_output_format']);
                         }
                     );
+
+                    if (!empty($method)) {
+                        $_route->method($method);
+                    }
 
                     // add route asserts if any
                     if (isset($options->route_asserts)) {
@@ -682,7 +694,8 @@ class Rest
                 ));
 
                 // if controller returns a response we pass it back directly
-                if (is_object($result) && is_subclass_of($result, 'Symfony\\Component\\HttpFoundation\\Response')) {
+                $response_class = '\\Symfony\\Component\\HttpFoundation\\Response';
+                if (is_object($result) && ($result instanceof $response_class)) {
                     return $result;
                 } else {
                     return $this->_createSuccessResponse($result, $format);
