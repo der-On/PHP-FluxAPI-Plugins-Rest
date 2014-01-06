@@ -151,7 +151,7 @@ class Rest
         {
             // ignore fields parameter as this is for narrowing down the fields to catch in a query
             // ignore 'raw' filter to prevent SQL injections
-            if (in_array($name, array('fields','@raw'))) {
+            if (!in_array($name, array('fields','@raw'))) {
                 if (substr($name,0,1) == '@') {
                     $query->filter(substr($name,1),explode(',',$value));
                 } else {
