@@ -409,7 +409,7 @@ class Rest
                     // with extension
                     $_route = $this->_api->app->match($route . '.{ext}',
                         function(Request $request, $ext) use ($self, $controller_name, $action) {
-                            $format = $this->getFormatFromExtension($ext, $self->config['default_output_format']);
+                            $format = $self->getFormatFromExtension($ext, $self->config['default_output_format']);
                             return $self->callController($request, $controller_name, $action, $format);
                         }
                     );
