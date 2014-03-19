@@ -437,6 +437,13 @@ class Rest
                     }
                 }
 
+                // add route converts if any
+                if (isset($options->route_converts)) {
+                    foreach($options->route_converts as $key => $convert) {
+                        $_route->convert($key, $convert);
+                    }
+                }
+
                 // without extension
                 if ($format === FALSE || $format == $this->config['default_output_format']) {
                     $_route = $this->_api->app->match($route,

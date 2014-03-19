@@ -27,6 +27,13 @@ class ControllerActionOptions extends \FluxAPI\Options
     public $route_asserts = null;
 
     /**
+     * Converts for the route as array where keys are the paramater names and values are the callbacks.
+     *
+     * @var null
+     */
+    public $route_converts = null;
+
+    /**
      * Exlcusive output format
      *
      * @var null
